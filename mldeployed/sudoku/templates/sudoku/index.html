@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Sudoku Solver</title>
+    <meta name="description" content="Sudoku solver. Upload an image , get a solution. Solution is generated with the help of Computer Vision, Deep Learning and Python.">
+    <meta name="author" content="Rudra Desai">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta property="og:title" content="Sudoku Solver">
+	<meta property="og:site_name" content="Sudoku Solver">
+	<meta property="og:url" content="http://www.rudradesai.in/">
+	<meta property="og:description" content="Sudoku solver. Upload an image , get a solution. Solution is generated with the help of Computer Vision, Deep Learning and Python.">
+    <link rel="stylesheet" href="{% static 'sudoku/assets/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.csom/css?family=Lato:300,400,700,300italic,400italic,700italic">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="{% static 'sudoku/assets/css/styles.min.css' %}">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B7NGGVM9SR"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'G-B7NGGVM9SR');
+	</script>
+</head>
+
+<body>
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                alert('{{ message }}');
+            </script>
+        {% endfor %}
+    {% endif %}
+    <nav class="navbar navbar-light navbar-expand bg-light navigation-clean">
+        <div class="container">
+            <!-- Start: Navigation Clean -->
+            <nav class="navbar navbar-light navbar-expand-md navigation-clean" style="width: 100%;opacity: 1;background-color: rgb(248,249,250);">
+                <div class="container"><a class="navbar-brand" href="/sudoku/">&nbsp;<i class="icon ion-ios-grid-view" style="height: 26px;width: 14px;"></i>&nbsp;Sudoku Solver</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                    <div
+                        class="collapse navbar-collapse" id="navcol-1">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="/#home">Home</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="/#about">About</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="/sudoku/">Try Again</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="/faqs/">FAQs</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="/#contact">Contact Us!</a></li>
+                        </ul>
+                <!-- </div><a href="https://www.buymeacoffee.com/rudradesai/" style="color: rgb(0,0,0);"></a></div> -->
+        </nav>
+        <!-- End: Navigation Clean --><button class="navbar-toggler" data-toggle="collapse"></button></div>
+    </nav>
+    <section class="showcase">
+        <div class="container-fluid p-0">
+            <div class="row no-gutters">
+                <div class="col-lg-6 order-lg-2 text-white showcase-img" style="background-position: center; background-size: contain; background-repeat: no-repeat; background-image:url({{ uploaded_file_url }});"><span></span></div>
+                <div class="col-lg-6 my-auto order-lg-1 showcase-text">
+                    <h2>Uploaded Image</h2>
+                    <p class="lead mb-0">When you upload an image, it goes into our computer vision processor that searches for a sudoku grid. Then, the image is reshaped into a proper square grid, and each of the 81 number's images is extracted and passed on to the next step &nbsp;</p>
+                </div>
+            </div>
+            <div class="row no-gutters">
+                <div class="col-lg-6 text-white showcase-img" style="background-position: center; background-size: contain; background-repeat: no-repeat; background-image:url({{ extracted_file_url }});"><span></span></div>
+                <div class="col-lg-6 my-auto order-lg-1 showcase-text">
+                    <h2>Extracted Sudoku</h2>
+                    <p class="lead mb-0">All the 81 extracted digits images are individually passed to an MNIST trained Deep Learning model to get the numerical value. This matrix is then passed to the last solver</p>
+                </div>
+            </div>
+            <div class="row no-gutters">
+                <div class="col-lg-6 col-xl-6 order-lg-2 text-white showcase-img" style="background-position: center; background-size: contain; background-repeat: no-repeat; background-image:url({{ solution_file_url }});"><span></span></div>
+                <div class="col-lg-6 my-auto order-lg-1 showcase-text">
+                    <h2>Final Solution</h2>
+                    <p class="lead mb-0"></p>
+                    <p class="lead mb-0" style="width: 376px;">There are 6,670,903,752,021,072,936,960 9x9 valid sudoku grids. So, brute force is not feasible. Hence, we use the backtracking approach to solve it. Even though solving sudoku is an NP-complete problem, we can solve it in moments because of the fixed 9x9 size</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Start: Footer Basic -->
+    {% include 'includes/footer.html' %}
+    <!-- End: Footer Basic -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

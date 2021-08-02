@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Sudoku Solver</title>
+    <meta name="description" content="Sudoku solver. Upload an image , get a solution. Solution is generated with the help of Computer Vision, Deep Learning and Python.">
+    <meta name="author" content="Rudra Desai">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta property="og:title" content="Sudoku Solver">
+	<meta property="og:site_name" content="Sudoku Solver">
+	<meta property="og:url" content="http://www.rudradesai.in/sudoku/">
+	<meta property="og:description" content="Sudoku solver. Upload an image , get a solution. Solution is generated with the help of Computer Vision, Deep Learning and Python.">
+    <link rel="stylesheet" href="{% static 'sudoku/assets/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="{% static 'sudoku/assets/css/styles.min.css' %}">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B7NGGVM9SR"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'G-B7NGGVM9SR');
+	</script>
+</head>
+
+<body>
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                alert('{{ message }}');
+            </script>
+        {% endfor %}
+    {% endif %}
+    <nav class="navbar navbar-light navbar-expand bg-light navigation-clean">
+        <div class="container">
+            <!-- Start: Navigation Clean -->
+            <nav class="navbar navbar-light navbar-expand-md navigation-clean" style="width: 100%;opacity: 1;background-color: rgb(248,249,250);">
+                <div class="container"><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><a class="navbar-brand" href="#">&nbsp;<i class="icon ion-ios-grid-view" style="height: 26px;width: 14px;"></i>&nbsp;Sudoku Solver</a>
+                    <div
+                        class="collapse navbar-collapse" id="navcol-1">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="/">Home</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="https://rudradesai.in/">About</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="https://rudradesai.in/#contact-section">Contact Us!</a></li>
+                        </ul>
+                <!-- </div><a href="https://www.buymeacoffee.com/rudradesai/" style="color: rgb(0,0,0);"><i class="fa fa-coffee"></i>&nbsp;Buy Me a Coffee</a></div> -->
+        </nav>
+        <!-- End: Navigation Clean --><button class="navbar-toggler" data-toggle="collapse"></button></div>
+    </nav>
+    <header class="masthead text-white text-center" style="background: url('bg-masthead.jpg')no-repeat center center;background-size: cover;background-image: url('{% static "sudoku/assets/img/background.jpeg" %}');">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-9 mx-auto">
+                    <h1 class="mb-5">Upload any sudoku image and get the solution in&nbsp; seconds<br></h1>
+                </div>
+                <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="col-12 col-md-9 mb-2 mb-md-0"><input type="file" id="id_Sudoku_image" name="Sudoku_image" style="width: 256px;height: 40px;margin: 0px;padding: 1rem;opacity: 0.70;filter: contrast(200%);"></div>
+                            <div class="col-12 col-md-3"><button class="btn btn-primary btn-block btn-lg" type="submit">Upload</button></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Start: Footer Basic -->
+    {% include 'includes/footer.html' %}
+    <!-- End: Footer Basic -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
