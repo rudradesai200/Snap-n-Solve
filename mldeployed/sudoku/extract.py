@@ -232,6 +232,27 @@ def createborder(path,color):
     cv2.imwrite(path,dst)
     return True
 
+def is_valid_sudoku(board):
+	for i in range(9):
+		row = {}
+		column = {}
+		block = {}
+		row_cube = 3 * (i//3)
+		column_cube = 3 * (i%3)
+		for j in range(9):
+			if board[i][j]!=0 and board[i][j] in row:
+				return False
+			row[board[i][j]] = 1
+			if board[j][i]!=0 and board[j][i] in column:
+				return False
+			column[board[j][i]] = 1
+			rc= row_cube+j//3
+			cc = column_cube + j%3
+			if board[rc][cc] in block and board[rc][cc]!=0:
+				return False
+			block[board[rc][cc]]=1
+	return True
+
 def parse_grid(request,path, save_path,border):
 	if border:
 		stat = createborder(path,[0,0,0])
@@ -252,5 +273,7 @@ def parse_grid(request,path, save_path,border):
 	x = model.predict(imgs,verbose=0)
 	y = (np.argmax(x,axis=1))
 	y = np.reshape(y,(9,9))
+	if not is_valid_sudoku(y):
+		raise ValueError()
 	cv2.imwrite(save_path,digs)
 	return y,digs

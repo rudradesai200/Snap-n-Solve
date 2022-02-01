@@ -29,7 +29,7 @@ def concate_images(request, grid, save_path):
     new_im.save(settings.MEDIA_ROOT+save_path)
 
 def generateimage(request,grid,save_path):
-    folder_path = settings.BASE_DIR + "/static/sudoku/digits/"
+    folder_path = str(settings.BASE_DIR) + "/static/sudoku/digits/"
     img_grid = []
     for i in range(9):
         temp = []
@@ -49,9 +49,9 @@ def home(request):
 
             # Setting up paths and images
             uploaded_file_url = obj.Sudoku_image.url
-            complete_image_url = settings.BASE_DIR+uploaded_file_url
+            complete_image_url = str(settings.BASE_DIR)+uploaded_file_url
             file_name_with_extension = uploaded_file_url.split('/')[-1]
-            extracted_file_url_complete = settings.BASE_DIR+"/media/sudoku/extracted/"+file_name_with_extension
+            extracted_file_url_complete = str(settings.BASE_DIR)+"/media/sudoku/extracted/"+file_name_with_extension
             file_name = file_name_with_extension.split(".")[0]
             extracted_file_url = "/media/sudoku/extracted/" + file_name_with_extension
             final_path = "/sudoku/solution/{}.png".format(file_name)
@@ -61,7 +61,7 @@ def home(request):
             try:
                 input_grid,_ = parse_grid(request,complete_image_url,extracted_file_url_complete,False)
             except:
-                messages.error(request,"Please Upload a clean image of sudoku , preferrably with White background.")
+                messages.error(request,"Oops! Something went wrong. Our model cannot proeperly decode digits from the given sudoku image")
                 form = SudokuForm()
                 return render(request, 'sudoku/home.html', {
                     'form': form,
@@ -83,7 +83,7 @@ def home(request):
             # print(input_grid)
             if game == None:
                 obj.status = False
-                if(f): messages.error(request,"This sudoku is not solvable, Or this image doesn not contain any sudoku")
+                if(f): messages.error(request,"Oops! Something went wrong. Our model cannot proeperly decode digits from the given sudoku image")
                 obj.save()
             else:
                 generateimage(request,game,final_path)

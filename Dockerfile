@@ -1,7 +1,7 @@
-FROM tensorflow/tensorflow:2.1.1
+FROM python:3.7-slim-buster
 
 # install nginx
-RUN apt-get update && apt-get install nginx python3-dev python3-pip python3-venv ffmpeg libsm6 libxext6 -y --no-install-recommends 
+RUN apt-get update && apt-get install nginx -y --no-install-recommends
 COPY nginx.default /etc/nginx/sites-available/default
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
@@ -16,6 +16,6 @@ RUN pip install -r requirements.txt
 RUN chown -R www-data:www-data /opt/app
 
 # start server
-EXPOSE 8020
+EXPOSE 8070
 STOPSIGNAL SIGTERM
 CMD ["/opt/app/start_server.sh"]

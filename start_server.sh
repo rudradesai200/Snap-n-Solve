@@ -2,7 +2,7 @@
 
 # start-server.sh
 if [ -n "$DJANGO_SUPERUSER_USERNAME" ] && [ -n "$DJANGO_SUPERUSER_PASSWORD" ] ; then
-    (cd mldeployed; python manage.py createsuperuser --no-input)
+    (cd cfviewer; python manage.py createsuperuser --no-input)
 fi
-(cd mldeployed; python3 manage.py collectstatic --noinput; gunicorn mldeployed.wsgi --user www-data --bind 0.0.0.0:8010 --workers 3) &
+(cd cfviewer; python3 manage.py collectstatic --noinput; python3 manage.py makemigrations; python3 manage.py migrate; gunicorn MLDeployed.wsgi --user www-data --bind 0.0.0.0:8010 --workers 3) &
 nginx -g "daemon off;"
