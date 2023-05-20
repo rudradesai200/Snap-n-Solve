@@ -7,6 +7,7 @@ import os
 import sys
 
 # BASE_DIR = "/home/rudra/Desktop/cfviewer/codeforces_problems_list/"
+# model_path = "/Users/rudrapd/repos/personal/Sudoku-Solver/mldeployed/sudoku/mlmodels/my_model.h5"
 model_path = os.path.join(settings.BASE_DIR,"sudoku/mlmodels/my_model.h5")
 model = load_model(model_path)
 
@@ -38,7 +39,9 @@ def pre_process_image(img, skip_dilate=False):
 
 
 def find_corners_of_largest_polygon(img):
-	"""Finds the 4 extreme corners of the largest contour in the image."""
+	"""Finds the 4 extreme corners of the largest contour in the image.
+		Basically the main sudoku grid.
+	"""
 	contours,_ = cv2.findContours(img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # Find contours
 	contours = sorted(contours, key=cv2.contourArea, reverse=True)  # Sort by area, descending
 	polygon = contours[0]  # Largest image
@@ -59,16 +62,17 @@ def distance_between(p1, p2):
 def crop_and_warp(img, crop_rect):
 	"""Crops and warps a rectangular section from an image into a square of similar size."""
 	top_left, top_right, bottom_right, bottom_left = crop_rect[0], crop_rect[1], crop_rect[2], crop_rect[3]
-	src = np.array([top_left, top_right, bottom_right, bottom_left], dtype='float32')
+	src = np.array([top_left, top_right, bottom_right, bottom_left], dtype=np.float32)
 	side = max([
 		distance_between(bottom_right, top_right),
 		distance_between(top_left, bottom_left),
 		distance_between(bottom_right, bottom_left),
 		distance_between(top_left, top_right)
 	])
-	dst = np.array([[0, 0], [side - 1, 0], [side - 1, side - 1], [0, side - 1]], dtype='float32')
+	dst = np.array([[0, 0], [side - 1, 0], [side - 1, side - 1], [0, side - 1]], dtype=np.float32)
 	m = cv2.getPerspectiveTransform(src, dst)
 	return cv2.warpPerspective(img, m, (int(side), int(side)))
+
 
 
 def infer_grid(img):
@@ -207,22 +211,20 @@ def extract_digit(img, rect, size):
 def get_digits(img, squares, size):
 	"""Extracts digits from their cells and builds an array"""
 	digits = []
-	img = pre_process_image(img.copy(), skip_dilate=True)
+	img = pre_process_image(img.copy())
 	for square in squares:
 		digits.append(extract_digit(img, square, size))
 	return digits
 
 def createborder(path,color):
-    
     borderType = cv2.BORDER_CONSTANT
-    
     imageName = path
     # Loads an image
     src = cv2.imread(cv2.samples.findFile(imageName), cv2.IMREAD_COLOR)
     # Check if image is loaded fine
     if src is None:
         return False
-    
+
     top = int(0.008 * src.shape[0])  # shape[0] = rows
     bottom = top
     left = int(0.008 * src.shape[1])  # shape[1] = cols
@@ -253,22 +255,20 @@ def is_valid_sudoku(board):
 			block[board[rc][cc]]=1
 	return True
 
-def parse_grid(request,path, save_path,border):
-	if border:
-		stat = createborder(path,[0,0,0])
-		if stat == False:
-			return None,None
-		stat = createborder(path,[255,255,255])
-		if stat == False:
-			return None,None
+def parse_grid(request,path, save_path):
+	# Process image to get the cropped sudoku grid
 	original = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 	processed = pre_process_image(original)
 	corners = find_corners_of_largest_polygon(processed)
 	cropped = crop_and_warp(original, corners)
+
+	# Grab the 81 squares out of the sudoku grid
 	squares = infer_grid(cropped)
+
+		# Extract digits
 	digits = get_digits(cropped, squares, 28)
 	digs = show_digits(digits)
-	imgs = np.array(digits,dtype=np.float)
+	imgs = np.array(digits,dtype=np.float64)
 	imgs = np.reshape(imgs,(81,-1))
 	x = model.predict(imgs,verbose=0)
 	y = (np.argmax(x,axis=1))

@@ -59,31 +59,26 @@ def home(request):
             f = True
             # Extract , solve and render
             try:
-                input_grid,_ = parse_grid(request,complete_image_url,extracted_file_url_complete,False)
-            except:
-                messages.error(request,"Oops! Something went wrong. Our model cannot proeperly decode digits from the given sudoku image")
+                input_grid,_ = parse_grid(request,complete_image_url,extracted_file_url_complete)
+            except Exception as e:
+                messages.error(request,"Oops! Something went wrong. Our model cannot decode the digits from the given sudoku image")
                 form = SudokuForm()
+                print(e)
                 return render(request, 'sudoku/home.html', {
                     'form': form,
                 })
+
+            print(input_grid)
             try:
                 game = start_solve(input_grid)
-            except:
-                try:
-                    input_grid,_ = parse_grid(request,complete_image_url,extracted_file_url_complete,True)
-                except:
-                    form = SudokuForm()
-                    return render(request, 'sudoku/home.html', {
-                        'form': form,
-                    })
-                try:
-                    game = start_solve(input_grid)
-                except:
-                    game= None
+            except Exception as e:
+                print(e)
+                game = None
+
             # print(input_grid)
             if game == None:
                 obj.status = False
-                if(f): messages.error(request,"Oops! Something went wrong. Our model cannot proeperly decode digits from the given sudoku image")
+                if(f): messages.error(request,"Oops! Something went wrong. Our model cannot properly decode digits from the given sudoku image")
                 obj.save()
             else:
                 generateimage(request,game,final_path)
